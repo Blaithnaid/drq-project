@@ -17,8 +17,8 @@ function App() {
 					<Navbar.Brand>Book Manager</Navbar.Brand>
 					<Navbar id="basic-navbar-nav">
 						<Nav className="me-auto">
-							<Nav.Link href="/add">View</Nav.Link>
-							<Nav.Link href="/list">Add</Nav.Link>
+							<Nav.Link href="/view">View</Nav.Link>
+							<Nav.Link href="/add">Add</Nav.Link>
 						</Nav>
 					</Navbar>
 				</Container>
