@@ -25,7 +25,7 @@ function App() {
 			</Navbar>
 			<Routes>
 				<Route path="/add" element={<Add />} />
-				<Route path="/list" element={<View />} />
+				<Route path="/view" element={<View />} />
 			</Routes>
 		</Router>
 	);
