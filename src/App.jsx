@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Add from "./pages/add";
+import View from "./pages/view";
+
+import { Navbar, Nav, Container } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [count, setCount] = useState(0);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+	return (
+		<Router>
+			<Navbar bg="light" expand="lg">
+				<Container fluid>
+					<Navbar.Brand>Book Manager</Navbar.Brand>
+					<Navbar id="basic-navbar-nav">
+						<Nav className="me-auto">
+							<Nav.Link href="/add">View</Nav.Link>
+							<Nav.Link href="/list">Add</Nav.Link>
+						</Nav>
+					</Navbar>
+				</Container>
+			</Navbar>
+			<Routes>
+				<Route path="/add" element={<Add />} />
+				<Route path="/list" element={<View />} />
+			</Routes>
+		</Router>
+	);
 }
 
-export default App
+export default App;
