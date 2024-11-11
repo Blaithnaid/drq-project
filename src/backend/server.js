@@ -32,3 +32,15 @@ mongoose.connect(process.env.DB_CONNECTION_STRING);
 mongoose.connection.on("connected", () => {
 	console.log("Connected to MongoDB");
 });
+
+// schema
+const bookSchema = new mongoose.Schema({
+	title: String,
+	author: String,
+	year: Number,
+	isbn: String,
+	owned: Boolean,
+});
+
+// model
+const Book = mongoose.model("Book", bookSchema);
