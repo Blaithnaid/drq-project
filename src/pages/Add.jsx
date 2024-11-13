@@ -19,7 +19,9 @@ const Add = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		// log details from the form
-		console.log(`Title: ${title}, Year: ${year}, Poster: ${poster}`);
+		console.log(
+			`Title: ${title}, Author: ${author}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}`
+		);
 		// create a new movie object
 		const movie = {
 			title: title,
@@ -41,7 +43,7 @@ const Add = () => {
 			<h1>Add a Book</h1>
 			<Form onSubmit={handleSubmit}>
 				<Form.Group>
-					<Form.Label>Title</Form.Label>
+					<Form.Label className="form-label">Title</Form.Label>
 					<Form.Control
 						type="text"
 						placeholder="Enter title"
@@ -49,7 +51,7 @@ const Add = () => {
 					/>
 				</Form.Group>
 				<Form.Group>
-					<Form.Label>Author</Form.Label>
+					<Form.Label className="form-label">Author</Form.Label>
 					<Form.Control
 						type="text"
 						placeholder="Enter author"
@@ -57,7 +59,7 @@ const Add = () => {
 					/>
 				</Form.Group>
 				<Form.Group>
-					<Form.Label>Year</Form.Label>
+					<Form.Label className="form-label">Year</Form.Label>
 					<Form.Control
 						type="number"
 						placeholder="Enter year"
@@ -65,7 +67,7 @@ const Add = () => {
 					/>
 				</Form.Group>
 				<Form.Group>
-					<Form.Label>ISBN</Form.Label>
+					<Form.Label className="form-label">ISBN</Form.Label>
 					<Form.Control
 						type="text"
 						placeholder="Enter ISBN"
@@ -73,7 +75,7 @@ const Add = () => {
 					/>
 				</Form.Group>
 				<Form.Group>
-					<Form.Label>Owned</Form.Label>
+					<Form.Label className="form-label">Owned</Form.Label>
 					<Form.Select
 						onChange={(e) => setOwned(e.target.value === "1")}
 					>
@@ -82,7 +84,11 @@ const Add = () => {
 						<option value="2">I want to buy it</option>
 					</Form.Select>
 				</Form.Group>
-				<Button variant="primary" type="submit">
+				<Button
+					variant="primary"
+					type="submit"
+					className="submit-button"
+				>
 					Add Book
 				</Button>
 			</Form>
