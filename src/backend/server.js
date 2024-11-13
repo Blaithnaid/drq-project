@@ -6,6 +6,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 
+const port = 4000;
+
 // create an express app
 const app = express();
 
@@ -56,4 +58,16 @@ app.post("/api/books", async (req, res) => {
 		message: "Movie created successfully",
 		movie: newMovie,
 	});
+});
+
+// error handling middleware
+app.use((err, req, res, next) => {
+	console.error(err.stack);
+	res.status(500).send("Something went wrong!");
+});
+
+// listen on port 4000, respond to requests
+app.listen(port, () => {
+	// log a message to the console
+	console.log(`Server is running on http://localhost:${port}`);
 });
