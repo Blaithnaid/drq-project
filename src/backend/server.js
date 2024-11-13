@@ -1,13 +1,16 @@
 // imports
-const express = require("express");
-const path = require("path");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+import express from "express";
+import path from "path";
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+
+// create an express app
 const app = express();
 
 // get environment variables
-require("dotenv").config();
+dotenv.config();
 
 // middleware
 app.use(express.json());
