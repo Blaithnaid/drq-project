@@ -47,3 +47,13 @@ const bookSchema = new mongoose.Schema({
 
 // model
 const Book = mongoose.model("Book", bookSchema);
+
+// route to add a new book
+app.post("/api/books", async (req, res) => {
+	const newMovie = new Book({ ...req.body });
+	await newMovie.save();
+	res.status(201).json({
+		message: "Movie created successfully",
+		movie: newMovie,
+	});
+});
