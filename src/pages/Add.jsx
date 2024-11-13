@@ -22,8 +22,8 @@ const Add = () => {
 		console.log(
 			`Title: ${title}, Author: ${author}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}`
 		);
-		// create a new movie object
-		const movie = {
+		// create a new book object
+		const book = {
 			title: title,
 			author: author,
 			year: year,
@@ -32,7 +32,7 @@ const Add = () => {
 		};
 
 		axios
-			.post("http://localhost:4000/api/books", movie)
+			.post("http://localhost:4000/api/books", book)
 			.then((res) => console.log(res.data))
 			.catch((err) => console.log(err.data));
 	};
