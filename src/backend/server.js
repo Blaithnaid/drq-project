@@ -6,13 +6,12 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 
-const port = 4000;
+dotenv.config();
+
+const port = process.env.PORT || 4000;
 
 // create an express app
 const app = express();
-
-// get environment variables
-dotenv.config();
 
 // middleware
 app.use(express.json());
@@ -61,12 +60,13 @@ app.post("/api/books", async (req, res) => {
 	});
 });
 
-// route to get all movies
+// route to get all books
 app.get("/api/books", async (req, res) => {
 	try {
 		const books = await Book.find({});
 		res.status(200).json({ books });
 	} catch (err) {
+		console.error("Error fetching books:", err);
 		res.status(500).json({ error: "Failed to fetch books" });
 	}
 });
@@ -78,9 +78,10 @@ app.delete("/api/books/:id", async (req, res) => {
 		if (!book) {
 			return res.status(404).json({ error: "Book not found" });
 		}
-		await book.remove();
+		await Book.deleteOne({ _id: req.params.id });
 		res.status(200).json({ message: "Book deleted successfully" });
 	} catch (err) {
+		console.error("Error deleting book:", err);
 		res.status(500).json({ error: "Failed to delete book" });
 	}
 });
