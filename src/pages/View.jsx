@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-	Form,
 	Button,
 	Container,
 	InputGroup,
@@ -30,6 +29,22 @@ const View = () => {
 				console.log(error);
 			});
 	}, []);
+
+	const handleDelete = (bookId) => {
+		console.log("Attempting to delete book with id:", bookId);
+		if (window.confirm("Are you sure you want to delete this book?")) {
+			axios
+				.delete(`http://localhost:4000/api/books/${bookId}`)
+				.then((response) => {
+					console.log("Book deleted successfully:", response.data);
+					setBooks(books.filter((book) => book._id !== bookId));
+				})
+				.catch((error) => {
+					console.error("Error deleting book:", error);
+					alert("Failed to delete the book. Please try again.");
+				});
+		}
+	};
 
 	return (
 		<Container>
@@ -66,76 +81,57 @@ const View = () => {
 											Options
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
+											<Dropdown.Item href="#">
+												Edit
+											</Dropdown.Item>
 											<Dropdown.Item
 												href="#"
-												onClick={() => {
-													console.log(
-														"Attempting to delete book with id:",
-														book._id
-													); // Add this line
-													if (
-														window.confirm(
-															"Are you sure you want to delete this book?"
-														)
-													) {
-														axios
-															.delete(
-																`http://localhost:4000/api/books/${book._id}`
-															)
-															.then(() => {
-																setBooks(
-																	books.filter(
-																		(b) =>
-																			b.id !==
-																			book._id
-																	)
-																);
-															})
-															.catch((error) => {
-																console.error(
-																	"Error deleting book:",
-																	error
-																);
-																alert(
-																	"Failed to delete the book. Please try again."
-																);
-															});
-													}
-												}}
+												onClick={() =>
+													handleDelete(book._id)
+												}
 											>
 												Delete
 											</Dropdown.Item>
 										</Dropdown.Menu>
 									</Dropdown>
-									<Dropdown className="flex-grow-1">
-										<Dropdown.Toggle
-											variant="secondary"
-											id="dropdown-basic"
-										>
-											Search
-										</Dropdown.Toggle>
-										<Dropdown.Menu>
-											<Dropdown.Item
-												href={`https://www.amazon.com/s?k=${book.title}`}
+									{book.owned ? (
+										<Dropdown className="flex-grow-1">
+											<Dropdown.Toggle
+												variant="success"
+												id="dropdown-basic"
 											>
-												Amazon
-											</Dropdown.Item>
-										</Dropdown.Menu>
-										<Dropdown.Menu>
-											<Dropdown.Item
-												href={`https://www.goodreads.com/search?q=${book.title}`}
+												Search
+											</Dropdown.Toggle>
+											<Dropdown.Menu>
+												<Dropdown.Item href="#">
+													Goodreads
+												</Dropdown.Item>
+												<Dropdown.Item href="#">
+													TheStorygraph
+												</Dropdown.Item>
+												<Dropdown.Item href="#">
+													LibraryThing
+												</Dropdown.Item>
+											</Dropdown.Menu>
+										</Dropdown>
+									) : (
+										<Dropdown className="flex-grow-1">
+											<Dropdown.Toggle
+												variant="success"
+												id="dropdown-basic"
 											>
-												Goodreads
-											</Dropdown.Item>
-										</Dropdown.Menu>
-										<Dropdown.Menu>
-											<Dropdown.Item
-												href={`https://www.google.com/search?udm=36&q=${book.title}`}
-											>
-												Google Books
-											</Dropdown.Item>
-										</Dropdown.Menu>
-									</Dropdown>
+												Buy
+											</Dropdown.Toggle>
+											<Dropdown.Menu>
+												<Dropdown.Item href="#">
+													Amazon
+												</Dropdown.Item>
+												<Dropdown.Item href="#">
+													Ebay
+												</Dropdown.Item>
+											</Dropdown.Menu>
+										</Dropdown>
+									)}
 								</div>
 							</Card.Body>
 						</Card>
