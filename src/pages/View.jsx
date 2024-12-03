@@ -1,7 +1,17 @@
 import React from "react";
-import { Form, Button, Container } from "react-bootstrap";
+import axios from "axios";
+import {
+	Form,
+	Button,
+	Container,
+	InputGroup,
+	Card,
+	Dropdown,
+} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./View.css";
+
+import { useState, useEffect } from "react";
 
 const View = () => {
 	const data = [];
@@ -13,7 +23,7 @@ const View = () => {
 			.then((response) => {
 				// once the data is retrieved, set the books state to the data
 				console.log(response.data.books);
-				setMovies(response.data.books);
+				setBooks(response.data.books);
 			})
 			.catch((error) => {
 				// if there is an error, log it to the console
@@ -25,6 +35,70 @@ const View = () => {
 		<Container>
 			<br />
 			<h1>View</h1>
+
+			<InputGroup className="mb-3">
+				<Form.Control
+					placeholder="Search books..."
+					aria-label="search-books"
+					aria-describedby=""
+				/>
+				<Button id="basic-addon1">🔍</Button>
+			</InputGroup>
+
+			<Form>
+				{books.map((book) => (
+					<Card key={book._id} style={{ width: "18rem" }}>
+						<div style={{ position: "relative" }}>
+							<Card.Img
+								variant="top"
+								src="src/assets/react.svg"
+							/>
+							<div
+								style={{
+									position: "absolute",
+									top: "10px",
+									right: "10px",
+								}}
+							>
+								<Dropdown>
+									<Dropdown.Toggle
+										variant="secondary"
+										id="dropdown-basic"
+									>
+										...
+									</Dropdown.Toggle>
+
+									<Dropdown.Menu>
+										<Dropdown.Item href="#">
+											Edit
+										</Dropdown.Item>
+										<Dropdown.Item href="#">
+											Delete
+										</Dropdown.Item>
+									</Dropdown.Menu>
+								</Dropdown>
+							</div>
+						</div>
+						<Card.Body>
+							<Card.Title>{book.title}</Card.Title>
+							<Card.Text>
+								<p>Title: {book.title}</p>
+								<p>Author: {book.author}</p>
+								<p>Year: {book.year}</p>
+								<p>ISBN: {book.isbn}</p>
+								<p>Owned: {book.owned ? "Yes" : "No"}</p>
+							</Card.Text>
+							<Button
+								variant="primary"
+								href={`https://www.amazon.com/s?k=${book.title}`}
+							>
+								Search Amazon
+							</Button>
+							<Button variant="secondary">Edit</Button>
+						</Card.Body>
+					</Card>
+				))}
+			</Form>
 		</Container>
 	);
 };
