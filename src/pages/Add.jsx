@@ -4,20 +4,30 @@ import { Form, Button, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Add.css";
 
-// Function to fetch book cover and ISBN from Open Library API
+// Function to fetch book metadata from open library API using title, or title and author
 const fetchBookInfo = async (title, author) => {
 	try {
-		const response = await axios.get(
-			`https://openlibrary.org/search.json?title=${encodeURIComponent(
-				title
-			)}&author=${encodeURIComponent(author)}`
-		);
+		// create our search URL
+		const searchUrl = author
+			? `https://openlibrary.org/search.json?title=${encodeURIComponent(
+					title
+			  )}&author=${encodeURIComponent(author)}`
+			: // if we don't have an author, just search by title
+			  `https://openlibrary.org/search.json?title=${encodeURIComponent(
+					title
+			  )}`;
 
+		// make our request
+		const response = await axios.get(searchUrl);
+
+		// if we have results, get the first book
 		if (response.data.docs && response.data.docs.length > 0) {
+			// set our metadata
 			const book = response.data.docs[0];
 			const isbn = book.isbn ? book.isbn[0] : null;
 			const year = book.publish_year ? book.publish_year[0] : null;
 
+			// if we have an ISBN, get the cover URL
 			if (isbn) {
 				const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}.jpg`;
 				console.log("Fetched book cover URL:", coverUrl);
@@ -35,15 +45,16 @@ const fetchBookInfo = async (title, author) => {
 const Add = () => {
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
-	const [year, setYear] = useState("");
 	const [owned, setOwned] = useState(true);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		// fetch book metadata using the API
 		const { coverUrl, isbn, year } = await fetchBookInfo(title, author);
 		console.log(
 			`Title: ${title}, Author: ${author}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
 		);
+		// create our book object
 		const book = {
 			title,
 			author,
@@ -53,6 +64,7 @@ const Add = () => {
 			owned,
 		};
 
+		// post the book to our API
 		axios
 			.post("http://localhost:4000/api/books", book)
 			.then((res) => console.log("Book added successfully:", res.data))
