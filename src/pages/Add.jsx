@@ -55,10 +55,10 @@ const Add = () => {
 		// create a new book object
 		const book = {
 			title: title,
-			author: author,
+			author: author || "Unknown Author",
 			cover: cover,
-			year: year,
-			isbn: isbn,
+			year: year || "0000",
+			isbn: isbn || "Unknown",
 			owned: owned,
 		};
 
@@ -79,6 +79,7 @@ const Add = () => {
 						type="text"
 						placeholder="Enter title"
 						onChange={(e) => setTitle(e.target.value)}
+						required
 					/>
 				</Form.Group>
 				<Form.Group>
