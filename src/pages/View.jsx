@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
 	Form,
@@ -7,11 +7,11 @@ import {
 	InputGroup,
 	Card,
 	Dropdown,
+	Row,
+	Col,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./View.css";
-
-import { useState, useEffect } from "react";
 
 const View = () => {
 	const data = [];
@@ -33,70 +33,60 @@ const View = () => {
 
 	return (
 		<Container>
-			<br />
-			<h1>View</h1>
-
-			<InputGroup className="mb-3">
-				<Form.Control
-					placeholder="Search books..."
-					aria-label="search-books"
-					aria-describedby=""
-				/>
-				<Button id="basic-addon1">🔍</Button>
-			</InputGroup>
-
 			<Form>
-				{books.map((book) => (
-					<Card key={book._id} style={{ width: "18rem" }}>
-						<div style={{ position: "relative" }}>
-							<Card.Img
-								variant="top"
-								src="src/assets/react.svg"
-							/>
-							<div
-								style={{
-									position: "absolute",
-									top: "10px",
-									right: "10px",
-								}}
-							>
-								<Dropdown>
-									<Dropdown.Toggle
-										variant="secondary"
-										id="dropdown-basic"
+				<Row>
+					{books.map((book) => (
+						<Col
+							key={book.id}
+							xs={12}
+							sm={6}
+							md={4}
+							style={{ marginBottom: "20px" }}
+						>
+							<Card>
+								<div className="d-flex justify-content-between align-items-center">
+									<Card.Img variant="top" src={book.cover} />
+									<div>
+										<Dropdown>
+											<Dropdown.Toggle
+												variant="success"
+												id="dropdown-basic"
+											>
+												Options
+											</Dropdown.Toggle>
+											<Dropdown.Menu>
+												<Dropdown.Item href="#">
+													Edit
+												</Dropdown.Item>
+												<Dropdown.Item href="#">
+													Delete
+												</Dropdown.Item>
+											</Dropdown.Menu>
+										</Dropdown>
+									</div>
+								</div>
+								<Card.Body>
+									<Card.Title>{book.title}</Card.Title>
+									<Card.Text as="div">
+										<div>Author: {book.author}</div>
+										<div>Year: {book.year}</div>
+										<div>ISBN: {book.isbn}</div>
+										<div>
+											Owned: {book.owned ? "Yes" : "No"}
+										</div>
+									</Card.Text>
+									<Button
+										variant="primary"
+										href={`https://www.amazon.com/s?k=${book.title}`}
 									>
-										...
-									</Dropdown.Toggle>
-
-									<Dropdown.Menu>
-										<Dropdown.Item href="#">
-											Edit
-										</Dropdown.Item>
-										<Dropdown.Item href="#">
-											Delete
-										</Dropdown.Item>
-									</Dropdown.Menu>
-								</Dropdown>
-							</div>
-						</div>
-						<Card.Body>
-							<Card.Title>{book.title}</Card.Title>
-							<Card.Subtitle>Author: {book.author}</Card.Subtitle>
-							<Card.Text>Year: {book.year}</Card.Text>
-							<Card.Text>ISBN: {book.isbn}</Card.Text>
-							<Card.Text>
-								Owned: {book.owned ? "Yes" : "No"}
-							</Card.Text>
-							<Button
-								variant="primary"
-								href={`https://www.amazon.com/s?k=${book.title}`}
-							>
-								Search Amazon
-							</Button>
-							<Button variant="secondary">Edit</Button>
-						</Card.Body>
-					</Card>
-				))}
+										Search Amazon
+									</Button>
+									<Button variant="secondary">Edit</Button>
+								</Card.Body>
+							</Card>
+						</Col>
+					))}
+				</Row>
 			</Form>
 		</Container>
 	);
