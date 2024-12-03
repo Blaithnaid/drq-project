@@ -46,6 +46,10 @@ const View = () => {
 		}
 	};
 
+	const formatTitleForUrl = (title) => {
+		return encodeURIComponent(title.trim());
+	};
+
 	return (
 		<Container>
 			<Row>
@@ -59,7 +63,14 @@ const View = () => {
 					>
 						<Card>
 							<div className="d-flex justify-content-between align-items-center">
-								<Card.Img variant="top" src={book.cover} />
+								<Card.Img
+									variant="top"
+									src={book.cover}
+									style={{
+										maxHeight: "400px",
+										width: "auto",
+									}}
+								/>
 							</div>
 							<Card.Body>
 								<Card.Title>{book.title}</Card.Title>
@@ -106,10 +117,18 @@ const View = () => {
 												<Dropdown.Item href="#">
 													Goodreads
 												</Dropdown.Item>
-												<Dropdown.Item href="#">
+												<Dropdown.Item
+													href={`https://app.thestorygraph.com/browse?search_term=${formatTitleForUrl(
+														book.title
+													)}`}
+												>
 													TheStorygraph
 												</Dropdown.Item>
-												<Dropdown.Item href="#">
+												<Dropdown.Item
+													href={`https://www.librarything.com/search.php?search=${formatTitleForUrl(
+														book.title
+													)}`}
+												>
 													LibraryThing
 												</Dropdown.Item>
 											</Dropdown.Menu>
@@ -123,10 +142,18 @@ const View = () => {
 												Buy
 											</Dropdown.Toggle>
 											<Dropdown.Menu>
-												<Dropdown.Item href="#">
+												<Dropdown.Item
+													href={`https://www.amazon.co.uk/s?k=${formatTitleForUrl(
+														book.title
+													)}`}
+												>
 													Amazon
 												</Dropdown.Item>
-												<Dropdown.Item href="#">
+												<Dropdown.Item
+													href={`https://www.ebay.com/sch/261186/i.html?_nkw=${formatTitleForUrl(
+														book.title
+													)}`}
+												>
 													Ebay
 												</Dropdown.Item>
 											</Dropdown.Menu>
