@@ -1,65 +1,56 @@
-// imports
-import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-import FormSelect from "react-bootstrap/FormSelect";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Add.css";
-// Get Google Books API key from environment variables
-const GOOGLE_BOOKS_KEY = import.meta.env.VITE_GOOGLE_BOOKS_KEY;
 
-// Function to fetch book cover from Google Books API
-const fetchBookCover = async (title, author) => {
+// Function to fetch book cover and ISBN from Open Library API
+const fetchBookInfo = async (title, author) => {
 	try {
 		const response = await axios.get(
-			`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-				`${title} ${author}`
-			)}&key=${GOOGLE_BOOKS_KEY}`
+			`https://openlibrary.org/search.json?title=${encodeURIComponent(
+				title
+			)}&author=${encodeURIComponent(author)}`
 		);
 
-		if (
-			response.data.items &&
-			response.data.items[0].volumeInfo.imageLinks
-		) {
-			const coverUrl =
-				response.data.items[0].volumeInfo.imageLinks.thumbnail;
-			console.log("Fetched book cover URL:", coverUrl);
-			return coverUrl;
+		if (response.data.docs && response.data.docs.length > 0) {
+			const book = response.data.docs[0];
+			const isbn = book.isbn ? book.isbn[0] : null;
+			const year = book.publish_year ? book.publish_year[0] : null;
+
+			if (isbn) {
+				const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}.jpg`;
+				console.log("Fetched book cover URL:", coverUrl);
+				return { coverUrl, isbn, year };
+			}
 		}
-		console.log("No book cover found");
-		return null;
+		console.log("No ISBN found");
+		return { coverUrl: null, isbn: null };
 	} catch (error) {
 		console.error("Error fetching book cover:", error);
-		return null;
+		return { coverUrl: null, isbn: null };
 	}
 };
 
 const Add = () => {
-	// state variables
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [year, setYear] = useState("");
-	const [isbn, setIsbn] = useState("");
 	const [owned, setOwned] = useState(true);
 
-	// handle form submission
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// fetch book cover
-		const cover = await fetchBookCover(title, author);
-		// log details from the form
+		const { coverUrl, isbn, year } = await fetchBookInfo(title, author);
 		console.log(
-			`Title: ${title}, Author: ${author}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${cover}`
+			`Title: ${title}, Author: ${author}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
 		);
-		// create a new book object
 		const book = {
-			title: title,
-			author: author || "Unknown Author",
-			cover: cover,
-			year: year || "0000",
-			isbn: isbn || "Unknown",
-			owned: owned,
+			title,
+			author,
+			cover: coverUrl,
+			year: year,
+			isbn: isbn,
+			owned,
 		};
 
 		axios
@@ -79,7 +70,6 @@ const Add = () => {
 						type="text"
 						placeholder="Enter title"
 						onChange={(e) => setTitle(e.target.value)}
-						required
 					/>
 				</Form.Group>
 				<Form.Group>
@@ -88,22 +78,6 @@ const Add = () => {
 						type="text"
 						placeholder="Enter author"
 						onChange={(e) => setAuthor(e.target.value)}
-					/>
-				</Form.Group>
-				<Form.Group>
-					<Form.Label className="form-label">Year</Form.Label>
-					<Form.Control
-						type="number"
-						placeholder="Enter year"
-						onChange={(e) => setYear(e.target.value)}
-					/>
-				</Form.Group>
-				<Form.Group>
-					<Form.Label className="form-label">ISBN</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="Enter ISBN"
-						onChange={(e) => setIsbn(e.target.value)}
 					/>
 				</Form.Group>
 				<Form.Group>
