@@ -5,40 +5,37 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Add.css";
 
 // Function to fetch book metadata from open library API using title, or title and author
-const fetchBookInfo = async (title, author) => {
+const fetchBookInfo = async (title, formAuthor) => {
 	try {
-		// create our search URL
-		const searchUrl = author
+		// Use formAuthor in URL if provided
+		const searchUrl = formAuthor
 			? `https://openlibrary.org/search.json?title=${encodeURIComponent(
 					title
-			  )}&author=${encodeURIComponent(author)}`
-			: // if we don't have an author, just search by title
-			  `https://openlibrary.org/search.json?title=${encodeURIComponent(
+			  )}&author=${encodeURIComponent(formAuthor)}`
+			: `https://openlibrary.org/search.json?title=${encodeURIComponent(
 					title
 			  )}`;
 
-		// make our request
 		const response = await axios.get(searchUrl);
 
-		// if we have results, get the first book
 		if (response.data.docs && response.data.docs.length > 0) {
-			// set our metadata
 			const book = response.data.docs[0];
+			// Use provided author or get from API
+			const finalAuthor =
+				formAuthor || (book.author_name ? book.author_name[0] : null);
 			const isbn = book.isbn ? book.isbn[0] : null;
 			const year = book.publish_year ? book.publish_year[0] : null;
 
-			// if we have an ISBN, get the cover URL
 			if (isbn) {
 				const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}.jpg`;
 				console.log("Fetched book cover URL:", coverUrl);
-				return { coverUrl, isbn, year };
+				return { coverUrl, isbn, year, finalAuthor };
 			}
 		}
-		console.log("No ISBN found");
-		return { coverUrl: null, isbn: null };
+		return { coverUrl: null, isbn: null, year: null, finalAuthor: null };
 	} catch (error) {
 		console.error("Error fetching book cover:", error);
-		return { coverUrl: null, isbn: null };
+		return { coverUrl: null, isbn: null, year: null, finalAuthor: null };
 	}
 };
 
@@ -49,18 +46,24 @@ const Add = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// fetch book metadata using the API
-		const { coverUrl, isbn, year } = await fetchBookInfo(title, author);
-		console.log(
-			`Title: ${title}, Author: ${author}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
+		const { coverUrl, isbn, year, finalAuthor } = await fetchBookInfo(
+			title,
+			author
 		);
-		// create our book object
+
+		// Use entered author if available, otherwise use API author
+		const bookAuthor = author || finalAuthor;
+
+		console.log(
+			`Title: ${title}, Author: ${bookAuthor}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
+		);
+
 		const book = {
 			title,
-			author,
+			author: bookAuthor,
 			cover: coverUrl,
-			year: year,
-			isbn: isbn,
+			year,
+			isbn,
 			owned,
 		};
 
