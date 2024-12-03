@@ -42,6 +42,7 @@ mongoose.connection.on("connected", () => {
 const bookSchema = new mongoose.Schema({
 	title: String,
 	author: String,
+	cover: String,
 	year: Number,
 	isbn: String,
 	owned: Boolean,

@@ -81,12 +81,11 @@ const View = () => {
 						</div>
 						<Card.Body>
 							<Card.Title>{book.title}</Card.Title>
+							<Card.Subtitle>Author: {book.author}</Card.Subtitle>
+							<Card.Text>Year: {book.year}</Card.Text>
+							<Card.Text>ISBN: {book.isbn}</Card.Text>
 							<Card.Text>
-								<p>Title: {book.title}</p>
-								<p>Author: {book.author}</p>
-								<p>Year: {book.year}</p>
-								<p>ISBN: {book.isbn}</p>
-								<p>Owned: {book.owned ? "Yes" : "No"}</p>
+								Owned: {book.owned ? "Yes" : "No"}
 							</Card.Text>
 							<Button
 								variant="primary"
