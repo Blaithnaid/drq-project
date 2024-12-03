@@ -52,12 +52,22 @@ const Book = mongoose.model("Book", bookSchema);
 
 // route to add a new book
 app.post("/api/books", async (req, res) => {
-	const newMovie = new Book({ ...req.body });
-	await newMovie.save();
+	const newBook = new Book({ ...req.body });
+	await newBook.save();
 	res.status(201).json({
-		message: "Movie created successfully",
-		movie: newMovie,
+		message: "Book created successfully",
+		book: newBook,
 	});
+});
+
+// route to get all movies
+app.get("/api/books", async (req, res) => {
+	try {
+		const books = await Book.find({});
+		res.status(200).json({ books });
+	} catch (err) {
+		res.status(500).json({ error: "Failed to fetch books" });
+	}
 });
 
 // error handling middleware
