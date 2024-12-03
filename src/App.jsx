@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Add from "./pages/add";
-import View from "./pages/view";
+import Add from "./pages/Add";
+import View from "./pages/View";
 
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -24,6 +24,7 @@ function App() {
 				</Container>
 			</Navbar>
 			<Routes>
+				<Route path="/" element={<View />} />
 				<Route path="/add" element={<Add />} />
 				<Route path="/view" element={<View />} />
 			</Routes>
