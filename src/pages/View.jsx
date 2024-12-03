@@ -11,10 +11,12 @@ import {
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./View.css";
+import { useNavigate } from "react-router-dom";
 
 const View = () => {
 	const data = [];
 	const [books, setBooks] = useState(data);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		axios // use axios to get the data from the local server API
@@ -44,6 +46,10 @@ const View = () => {
 					alert("Failed to delete the book. Please try again.");
 				});
 		}
+	};
+
+	const handleEdit = (bookId) => {
+		navigate(`/edit/${bookId}`);
 	};
 
 	const formatTitleForUrl = (title) => {
@@ -92,7 +98,11 @@ const View = () => {
 											Options
 										</Dropdown.Toggle>
 										<Dropdown.Menu>
-											<Dropdown.Item href="#">
+											<Dropdown.Item
+												onClick={() =>
+													handleEdit(book._id)
+												}
+											>
 												Edit
 											</Dropdown.Item>
 											<Dropdown.Item
