@@ -71,6 +71,25 @@ app.get("/api/books", async (req, res) => {
 	}
 });
 
+// Get single book by ID
+app.get("/api/books/:id", async (req, res) => {
+	try {
+		console.log("Fetching book with ID:", req.params.id);
+		const book = await Book.findById(req.params.id);
+
+		if (!book) {
+			console.log("Book not found");
+			return res.status(404).json({ error: "Book not found" });
+		}
+
+		console.log("Book found:", book);
+		res.status(200).json({ book });
+	} catch (err) {
+		console.error("Error fetching book:", err);
+		res.status(500).json({ error: "Failed to fetch book" });
+	}
+});
+
 // route to remove a book
 app.delete("/api/books/:id", async (req, res) => {
 	try {
@@ -83,6 +102,22 @@ app.delete("/api/books/:id", async (req, res) => {
 	} catch (err) {
 		console.error("Error deleting book:", err);
 		res.status(500).json({ error: "Failed to delete book" });
+	}
+});
+
+// edit a book by ID
+app.put("/api/books/:id", async (req, res) => {
+	try {
+		const book = await Book.findById(req.params.id);
+		if (!book) {
+			return res.status(404).json({ error: "Book not found" });
+		}
+		book.set(req.body);
+		await book.save();
+		res.status(200).json({ message: "Book updated successfully" });
+	} catch (err) {
+		console.error("Error updating book:", err);
+		res.status(500).json({ error: "Failed to update book" });
 	}
 });
 
