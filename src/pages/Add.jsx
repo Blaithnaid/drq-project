@@ -4,10 +4,25 @@ import { Form, Button, Container, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Add.css";
 
-// Function to fetch book metadata from open library API using title, or title and author
+// check if the cover we got from the API is a valid image
+const isValidCoverImage = async (url) => {
+	return new Promise((resolve) => {
+		const img = new Image();
+		img.onload = () => {
+			// check if image is larger than 1x1
+			resolve(img.width > 1 && img.height > 1);
+		};
+		img.onerror = () => {
+			resolve(false);
+		};
+		img.src = url;
+	});
+};
+
+// function to fetch book metadata from open library API using title, or title and author
 const fetchBookInfo = async (title, formAuthor) => {
 	try {
-		// Use formAuthor in URL if provided
+		// use formAuthor in URL if provided
 		const searchUrl = formAuthor
 			? `https://openlibrary.org/search.json?title=${encodeURIComponent(
 					title
@@ -18,9 +33,10 @@ const fetchBookInfo = async (title, formAuthor) => {
 
 		const response = await axios.get(searchUrl);
 
+		// check if we have a valid response and book data
 		if (response.data.docs && response.data.docs.length > 0) {
 			const book = response.data.docs[0];
-			// Use provided author or get from API
+			// use provided author or get from API
 			const finalAuthor =
 				formAuthor || (book.author_name ? book.author_name[0] : null);
 			const isbn = book.isbn ? book.isbn[0] : null;
@@ -28,8 +44,19 @@ const fetchBookInfo = async (title, formAuthor) => {
 
 			if (isbn) {
 				const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}.jpg`;
-				console.log("Fetched book cover URL:", coverUrl);
-				return { coverUrl, isbn, year, finalAuthor };
+				const isValidCover = await isValidCoverImage(coverUrl);
+				if (!isValidCover) {
+					setShowSuccess(false);
+					alert("Could not find cover, defaulting to placeholder");
+				}
+				console.log("isValidCover: ", isValidCover);
+
+				return {
+					coverUrl: isValidCover ? coverUrl : null,
+					isbn,
+					year,
+					finalAuthor,
+				};
 			}
 		}
 		return { coverUrl: null, isbn: null, year: null, finalAuthor: null };
@@ -40,6 +67,7 @@ const fetchBookInfo = async (title, formAuthor) => {
 };
 
 const Add = () => {
+	// add state variables for form fields, loading state, and success message
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [owned, setOwned] = useState(true);
@@ -57,7 +85,7 @@ const Add = () => {
 				author
 			);
 
-			// Use entered author if available, otherwise use API author
+			// use entered author if available, otherwise use API author
 			const bookAuthor = author || finalAuthor;
 
 			console.log(
