@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./View.css";
 import { useNavigate } from "react-router-dom";
 
-import { BookCard } from "src/components/BookCard.jsx";
+import BookCard from "../components/BookCard.jsx";
 
 const View = () => {
 	const data = [];
