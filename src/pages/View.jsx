@@ -8,6 +8,7 @@ import {
 	Dropdown,
 	Row,
 	Col,
+	Modal,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./View.css";
@@ -17,6 +18,8 @@ const View = () => {
 	const data = [];
 	const [books, setBooks] = useState(data);
 	const navigate = useNavigate();
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [bookToDelete, setBookToDelete] = useState(null);
 
 	useEffect(() => {
 		axios // use axios to get the data from the local server API
@@ -54,6 +57,26 @@ const View = () => {
 
 	const formatTitleForUrl = (title) => {
 		return encodeURIComponent(title.trim());
+	};
+
+	const handleDeleteClick = (book) => {
+		setBookToDelete(book);
+		setShowDeleteModal(true);
+	};
+
+	const confirmDelete = async () => {
+		if (bookToDelete) {
+			try {
+				await axios.delete(
+					`http://localhost:4000/api/books/${bookToDelete._id}`
+				);
+				setBooks(books.filter((book) => book._id !== bookToDelete._id));
+				setShowDeleteModal(false);
+			} catch (error) {
+				console.error("Error deleting book:", error);
+				alert("Failed to delete the book. Please try again.");
+			}
+		}
 	};
 
 	return (
@@ -108,7 +131,7 @@ const View = () => {
 											<Dropdown.Item
 												href="#"
 												onClick={() =>
-													handleDelete(book._id)
+													handleDeleteClick(book)
 												}
 											>
 												Delete
@@ -124,7 +147,11 @@ const View = () => {
 												Search
 											</Dropdown.Toggle>
 											<Dropdown.Menu>
-												<Dropdown.Item href="#">
+												<Dropdown.Item
+													href={`https://www.goodreads.com/search?q=${formatTitleForUrl(
+														book.title
+													)}`}
+												>
 													Goodreads
 												</Dropdown.Item>
 												<Dropdown.Item
@@ -175,6 +202,29 @@ const View = () => {
 					</Col>
 				))}
 			</Row>
+
+			<Modal
+				show={showDeleteModal}
+				onHide={() => setShowDeleteModal(false)}
+			>
+				<Modal.Header closeButton>
+					<Modal.Title>Confirm Deletion</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					Are you sure you want to delete "{bookToDelete?.title}"?
+				</Modal.Body>
+				<Modal.Footer>
+					<Button
+						variant="secondary"
+						onClick={() => setShowDeleteModal(false)}
+					>
+						Cancel
+					</Button>
+					<Button variant="danger" onClick={confirmDelete}>
+						Delete
+					</Button>
+				</Modal.Footer>
+			</Modal>
 		</Container>
 	);
 };
