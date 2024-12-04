@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Card, Dropdown } from "react-bootstrap";
+import PlaceholderImg from "../assets/placeholder.png";
 
 const BookCard = ({
 	book,
@@ -12,7 +13,7 @@ const BookCard = ({
 		<div className="d-flex justify-content-between align-items-center">
 			<Card.Img
 				variant="top"
-				src={book.cover}
+				src={book.cover ? book.cover : PlaceholderImg}
 				style={{
 					maxHeight: "400px",
 					width: "auto",
