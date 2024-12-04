@@ -9,7 +9,7 @@ const BookCard = ({
 	handleDeleteClick,
 	formatTitleForUrl,
 }) => (
-	<Card className="d-flex align-items-center">
+	<Card className="d-flex align-items-center h-100">
 		<div className="d-flex justify-content-between align-items-center">
 			<Card.Img
 				variant="top"
