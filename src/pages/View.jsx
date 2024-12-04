@@ -80,7 +80,7 @@ const View = () => {
 	};
 
 	return (
-		<Container>
+		<Container fluid className="books-container">
 			<Row>
 				{books.map((book) => (
 					<Col
@@ -88,7 +88,7 @@ const View = () => {
 						xs={12}
 						sm={6}
 						md={4}
-						style={{ marginBottom: "20px" }}
+						className="book-card"
 					>
 						<Card>
 							<div className="d-flex justify-content-between align-items-center">
@@ -105,7 +105,6 @@ const View = () => {
 								<Card.Title>{book.title}</Card.Title>
 								<Card.Subtitle>{book.author}</Card.Subtitle>
 								<Card.Text as="div">
-									<div>ID: {book._id}</div>
 									<div>Year: {book.year}</div>
 									<div>ISBN: {book.isbn}</div>
 									<div>

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./App.css";
 import Add from "./pages/Add";
 import Edit from "./pages/Edit";
 import View from "./pages/View";
 
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 function App() {
 	const [count, setCount] = useState(0);
