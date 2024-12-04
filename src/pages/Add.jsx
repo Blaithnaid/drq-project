@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Form, Button, Container } from "react-bootstrap";
+import { Form, Button, Container, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Add.css";
 
@@ -43,39 +43,65 @@ const Add = () => {
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [owned, setOwned] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
+	const [showSuccess, setShowSuccess] = useState(false);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const { coverUrl, isbn, year, finalAuthor } = await fetchBookInfo(
-			title,
-			author
-		);
+		setIsLoading(true);
+		setShowSuccess(false);
 
-		// Use entered author if available, otherwise use API author
-		const bookAuthor = author || finalAuthor;
+		try {
+			const { coverUrl, isbn, year, finalAuthor } = await fetchBookInfo(
+				title,
+				author
+			);
 
-		console.log(
-			`Title: ${title}, Author: ${bookAuthor}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
-		);
+			// Use entered author if available, otherwise use API author
+			const bookAuthor = author || finalAuthor;
 
-		const book = {
-			title,
-			author: bookAuthor,
-			cover: coverUrl,
-			year,
-			isbn,
-			owned,
-		};
+			console.log(
+				`Title: ${title}, Author: ${bookAuthor}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
+			);
 
-		// post the book to our API
-		axios
-			.post("http://localhost:4000/api/books", book)
-			.then((res) => console.log("Book added successfully:", res.data))
-			.catch((err) => console.error("Error adding book:", err));
+			const book = {
+				title,
+				author: bookAuthor,
+				cover: coverUrl,
+				year,
+				isbn,
+				owned,
+			};
+
+			// post the book to our API
+			axios
+				.post("http://localhost:4000/api/books", book)
+				.then((res) => {
+					console.log("Book added successfully:", res.data);
+					setShowSuccess(true);
+					setTitle("");
+					setAuthor("");
+					setOwned(true);
+				})
+				.catch((err) => console.error("Error adding book:", err));
+		} catch (error) {
+			console.error("Error adding book:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
 		<Container>
+			{showSuccess && (
+				<Alert
+					variant="success"
+					onClose={() => setShowSuccess(false)}
+					dismissible
+				>
+					Book successfully added!
+				</Alert>
+			)}
 			<br />
 			<h1>Add a Book</h1>
 			<Form onSubmit={handleSubmit}>
@@ -95,7 +121,7 @@ const Add = () => {
 						onChange={(e) => setAuthor(e.target.value)}
 					/>
 				</Form.Group>
-				<Form.Group>
+				<Form.Group style={{ marginBottom: "20px" }}>
 					<Form.Label className="form-label">Owned</Form.Label>
 					<Form.Select
 						aria-label="Default select example"
@@ -106,8 +132,8 @@ const Add = () => {
 						<option value="2">I want to buy it</option>
 					</Form.Select>
 				</Form.Group>
-				<Button variant="primary" type="submit">
-					Add Book
+				<Button variant="primary" type="submit" disabled={isLoading}>
+					{isLoading ? "Adding Book..." : "Add Book"}
 				</Button>
 			</Form>
 		</Container>
