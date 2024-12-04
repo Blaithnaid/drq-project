@@ -1,0 +1,15 @@
+/* View.css */
+.books-container {
+	padding: 10px;
+	background-color: #2a2e45;
+	width: 100%;
+}
+
+.book-card {
+	margin-bottom: 20px;
+}
+
+.book-cover {
+	max-height: 400px;
+	width: auto;
+}
