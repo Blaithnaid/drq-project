@@ -4,6 +4,7 @@ import { Card, Dropdown } from "react-bootstrap";
 import PlaceholderImg from "../assets/placeholder.png";
 
 const BookCard = ({
+	// get book data and functions to work with it from props
 	book,
 	handleEdit,
 	handleDeleteClick,
@@ -51,6 +52,7 @@ const BookCard = ({
 							Search
 						</Dropdown.Toggle>
 						<Dropdown.Menu>
+							{/* output links to look up book info */}
 							<Dropdown.Item
 								href={`https://www.goodreads.com/search?q=${formatTitleForUrl(
 									book.title
@@ -80,6 +82,7 @@ const BookCard = ({
 							Buy
 						</Dropdown.Toggle>
 						<Dropdown.Menu>
+							{/* output links to look up locations to buy the book */}
 							<Dropdown.Item
 								href={`https://www.amazon.co.uk/s?k=${formatTitleForUrl(
 									book.title
@@ -102,6 +105,7 @@ const BookCard = ({
 	</Card>
 );
 
+// define the prop types for the component
 BookCard.propTypes = {
 	book: PropTypes.shape({
 		cover: PropTypes.string,

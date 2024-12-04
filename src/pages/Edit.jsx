@@ -47,6 +47,7 @@ const Edit = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
+			// create book object with form data
 			const updatedBook = {
 				title,
 				author,
@@ -56,6 +57,7 @@ const Edit = () => {
 				cover,
 			};
 
+			// post the book to our API
 			await axios.put(
 				`http://localhost:4000/api/books/${id}`,
 				updatedBook

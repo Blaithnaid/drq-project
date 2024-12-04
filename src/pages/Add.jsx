@@ -42,13 +42,12 @@ const fetchBookInfo = async (title, formAuthor) => {
 			const isbn = book.isbn ? book.isbn[0] : null;
 			const year = book.publish_year ? book.publish_year[0] : null;
 
+			// check if we have an ISBN to get a cover image
 			if (isbn) {
+				// if we have one, get the cover image URL
 				const coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}.jpg`;
+				// check if the cover image is valid
 				const isValidCover = await isValidCoverImage(coverUrl);
-				if (!isValidCover) {
-					setShowSuccess(false);
-					alert("Could not find cover, defaulting to placeholder");
-				}
 				console.log("isValidCover: ", isValidCover);
 
 				return {
@@ -76,6 +75,7 @@ const Add = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		// set loading state and hide success message
 		setIsLoading(true);
 		setShowSuccess(false);
 
@@ -92,6 +92,7 @@ const Add = () => {
 				`Title: ${title}, Author: ${bookAuthor}, Year: ${year}, ISBN: ${isbn}, Owned: ${owned}, Cover: ${coverUrl}`
 			);
 
+			// create book object with form data
 			const book = {
 				title,
 				author: bookAuthor,
