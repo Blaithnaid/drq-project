@@ -4,8 +4,6 @@ import {
 	Button,
 	Container,
 	InputGroup,
-	Card,
-	Dropdown,
 	Row,
 	Col,
 	Modal,
@@ -20,11 +18,14 @@ import BookCard from "../components/BookCard.jsx";
 const View = () => {
 	const data = [];
 	const [books, setBooks] = useState(data);
-	const navigate = useNavigate();
+	const navigate = useNavigate(); // we use this to navigate to the edit page
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [bookToDelete, setBookToDelete] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
 
+	// this is the books array we actually map over
+	// it only shows books that match the search term
+	// if the search term is empty, it shows all books
 	const filteredBooks = books.filter((book) => {
 		if (!book || (!book.title && !book.author)) return false;
 
@@ -48,22 +49,6 @@ const View = () => {
 				console.log(error);
 			});
 	}, []);
-
-	const handleDelete = (bookId) => {
-		console.log("Attempting to delete book with id:", bookId);
-		if (window.confirm("Are you sure you want to delete this book?")) {
-			axios
-				.delete(`http://localhost:4000/api/books/${bookId}`)
-				.then((response) => {
-					console.log("Book deleted successfully:", response.data);
-					setBooks(books.filter((book) => book._id !== bookId));
-				})
-				.catch((error) => {
-					console.error("Error deleting book:", error);
-					alert("Failed to delete the book. Please try again.");
-				});
-		}
-	};
 
 	const handleEdit = (bookId) => {
 		navigate(`/edit/${bookId}`);
@@ -109,22 +94,32 @@ const View = () => {
 			</InputGroup>
 
 			<Row>
-				{filteredBooks.map((book) => (
-					<Col
-						key={book._id}
-						xs={12}
-						sm={6}
-						md={4}
-						className="book-card"
-					>
-						<BookCard
-							book={book}
-							handleEdit={handleEdit}
-							handleDeleteClick={handleDeleteClick}
-							formatTitleForUrl={formatTitleForUrl}
-						/>
+				{filteredBooks.length === 0 ? (
+					<Col className="text-center p-5">
+						<h4>No books found!</h4>
+						<h5>
+							Either add some books or try a different search
+							term.
+						</h5>
 					</Col>
-				))}
+				) : (
+					filteredBooks.map((book) => (
+						<Col
+							key={book._id}
+							xs={12}
+							sm={6}
+							md={4}
+							className="book-card"
+						>
+							<BookCard
+								book={book}
+								handleEdit={handleEdit}
+								handleDeleteClick={handleDeleteClick}
+								formatTitleForUrl={formatTitleForUrl}
+							/>
+						</Col>
+					))
+				)}
 			</Row>
 
 			<Modal

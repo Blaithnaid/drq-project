@@ -1,5 +1,6 @@
 /* View.css */
 .books-container {
+	min-height: calc(100vh - 56px);
 	padding: 10px;
 	background-color: #2a2e45;
 	width: 100%;
@@ -21,4 +22,12 @@
 #search-prompt {
 	color: white;
 	background-color: #676fa2;
+}
+
+h4 {
+	color: white;
+}
+
+h5 {
+	color: lightgray;
 }
