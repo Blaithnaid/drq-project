@@ -13,3 +13,12 @@
 	max-height: 400px;
 	width: auto;
 }
+
+.search-bar {
+	margin-bottom: 10px;
+}
+
+#search-prompt {
+	color: white;
+	background-color: #676fa2;
+}
