@@ -9,6 +9,7 @@ import {
 	Row,
 	Col,
 	Modal,
+	Form,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./View.css";
@@ -22,6 +23,17 @@ const View = () => {
 	const navigate = useNavigate();
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [bookToDelete, setBookToDelete] = useState(null);
+	const [searchTerm, setSearchTerm] = useState("");
+
+	const filteredBooks = books.filter((book) => {
+		if (!book || (!book.title && !book.author)) return false;
+
+		const search = searchTerm.toLowerCase();
+		const title = book.title?.toLowerCase() || "";
+		const author = book.author?.toLowerCase() || "";
+
+		return title.includes(search) || author.includes(search);
+	});
 
 	useEffect(() => {
 		axios // use axios to get the data from the local server API
@@ -83,8 +95,21 @@ const View = () => {
 
 	return (
 		<Container fluid className="books-container">
+			{/* search bar */}
+			<InputGroup className="search-bar">
+				<InputGroup.Text id="search-prompt">Search</InputGroup.Text>
+				<Form.Control
+					type="text"
+					placeholder="Search by title or author"
+					aria-label="Search"
+					aria-describedby="basic-addon1"
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+				/>
+			</InputGroup>
+
 			<Row>
-				{books.map((book) => (
+				{filteredBooks.map((book) => (
 					<Col
 						key={book._id}
 						xs={12}
