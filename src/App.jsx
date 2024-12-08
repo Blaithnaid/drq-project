@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Add from "./pages/Add";
 import Edit from "./pages/Edit";
@@ -9,8 +8,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
 		<Router>
 			<Navbar bg="light" expand="lg">
