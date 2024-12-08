@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Add.css";
@@ -72,12 +72,26 @@ const Add = () => {
 	const [owned, setOwned] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
+	const [isAdding, setIsAdding] = useState(false);
+
+	useEffect(() => {
+		const handleBeforeUnload = (e) => {
+			if (isAdding) {
+				e.preventDefault();
+				e.returnValue = "";
+			}
+		};
+		window.addEventListener("beforeunload", handleBeforeUnload);
+		return () =>
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+	}, [isAdding]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		// set loading state and hide success message
 		setIsLoading(true);
 		setShowSuccess(false);
+		setIsAdding(true);
 
 		try {
 			const { coverUrl, isbn, year, finalAuthor } = await fetchBookInfo(
@@ -117,6 +131,7 @@ const Add = () => {
 			console.error("Error adding book:", error);
 		} finally {
 			setIsLoading(false);
+			setIsAdding(false);
 		}
 	};
 
