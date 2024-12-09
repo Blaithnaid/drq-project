@@ -72,6 +72,7 @@ const Add = () => {
 	const [owned, setOwned] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
+	const [error, setError] = useState(null);
 	const [isAdding, setIsAdding] = useState(false);
 
 	useEffect(() => {
@@ -88,7 +89,24 @@ const Add = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// set loading state and hide success message
+
+		// Clear previous error state
+		setError(null);
+
+		// Validate required fields
+		if (!title.trim() && !author.trim()) {
+			setError(
+				"Please enter a title. You cannot search with just an author."
+			);
+			return;
+		}
+
+		if (!title.trim()) {
+			setError("Please enter a title");
+			return;
+		}
+
+		// Proceed with form submission if validation passes
 		setIsLoading(true);
 		setShowSuccess(false);
 		setIsAdding(true);
@@ -144,6 +162,15 @@ const Add = () => {
 					dismissible
 				>
 					Book successfully added!
+				</Alert>
+			)}
+			{error && (
+				<Alert
+					variant="danger"
+					onClose={() => setError(null)}
+					dismissible
+				>
+					{error}
 				</Alert>
 			)}
 			<br />
